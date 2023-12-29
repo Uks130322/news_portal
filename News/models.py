@@ -26,6 +26,9 @@ class Category(models.Model):
 
     name = models.CharField(max_length=150, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Post(models.Model):
     """Can be news or article; has relation with Author"""
@@ -59,6 +62,9 @@ class Post(models.Model):
     def preview(self):
         """Show the beginning of the post"""
         return self.content[:self.PREVIEW_LENGTH] + '...'
+
+    def __str__(self):
+        return f'{self.title}\n{self.preview()}'
 
 
 class PostCategory(models.Model):

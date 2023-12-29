@@ -1,0 +1,15 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+    Post
+{% endblock title %}
+
+{% block content %}
+    <h3>{{ post.title|censor }}</h3>
+    <h6>{{ post.add_date|date:'d M Y' }}</h6>
+    <h6>Автор: {{ post.author.user.username }}</h6>
+    <br>
+    <p style="white-space: break-spaces;">{{ post.content|censor }}</p>
+{% endblock content %}

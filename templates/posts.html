@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+    Posts
+{% endblock title %}
+
+{% block content %}
+    <h2>Количество доступных статей: {{ posts|length }}</h2>
+    <br><br>
+    {% if posts %}
+        {% for post in posts %}
+            <h4><a class="nav-link" href="/posts/{{ post.pk }}">{{ post.title|censor }}</a></h4>
+            <h6>{{ post.add_date|date:'d M Y' }}</h6>
+            <p>{{ post.content|truncatewords:20|censor }}</p>
+            <br><br>
+        {% endfor %}
+    {% else %}
+        <h3>Извините, новостей сейчас нет!</h3>
+    {% endif %}
+{% endblock content %}
