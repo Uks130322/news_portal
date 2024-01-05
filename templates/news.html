@@ -10,7 +10,7 @@
     <h2>Количество доступных статей: {{ posts|length }}</h2>
     <br><br>
     {% if posts %}
-        {% for post in posts %}
+        {% for post in page_obj %}
             <h4><a class="nav-link" href="/news/{{ post.pk }}">{{ post.title|censor }}</a></h4>
             <h6>{{ post.add_date|date:'d M Y' }}</h6>
             <p>{{ post.content|truncatewords:20|censor }}</p>
@@ -20,3 +20,4 @@
         <h3>Извините, новостей сейчас нет!</h3>
     {% endif %}
 {% endblock content %}
+

@@ -19,7 +19,7 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
             <div class="container px-4">
-                <a class="navbar-brand" href="/news">Главная</a>
+                <a class="navbar-brand" href="/news/">Главная</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
@@ -38,23 +38,39 @@
             </div>
         </header>
         <!-- Content section-->
-        <section style="padding-top: 4rem;">
+        <section style="padding-top: 4rem; padding-bottom: 1rem;">
             <div class="container px-4">
                 <div class="row gx-4 justify-content-center">
                     <div class="col-lg-8">
                         {% block content %}
                         {{ flatpage.content }}
-                        <br>
-                        <hr>
-                        <br><br>
                         <div class="home-image-wrapper">
                             <img class="home-image" src="{% static 'assets/jelly_fish.png' %}">
                         </div>
-                          {% endblock content %}
+                        {% endblock content %}
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- Paginator section-->
+        <div class="lead text-center" style="padding-bottom: 7rem;">
+            {% block paginator %}
+                {% for page_number in paginator_range %}
+                    {% if page_number == page_obj.paginator.ELLIPSIS %}
+                        {{ page_number }}
+                    {% else %}
+                        <a
+                                href="?page={{ page_number }}"
+                                class="{% if page_number == page_obj.number %}fw-bold{% endif %}"
+                        >
+                            {{ page_number }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endblock paginator %}
+        </div>
+
 
         <!-- Footer-->
         <footer class="py-5 bg-dark">
