@@ -1,0 +1,30 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+    Search
+{% endblock title %}
+
+{% block content %}
+    <h2>Давайте найдём!</h2>
+    <br>
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input class="btn btn-lg btn-dark" type="submit" value="Найти" />
+    </form>
+    <br><br>
+    <h3>Количество найденых статей: {{ posts|length }}</h3>
+    <br><br>
+    {% if posts %}
+        {% for post in page_obj %}
+            <h4><a class="nav-link" href="/news/{{ post.pk }}">{{ post.title|censor }}</a></h4>
+            <h6>{{ post.add_date|date:'d M Y' }}</h6>
+            <p>{{ post.content|truncatewords:20|censor }}</p>
+            <br><br>
+        {% endfor %}
+    {% else %}
+        <h3>Извините, новостей сейчас нет!</h3>
+    {% endif %}
+{% endblock content %}
+

@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         {% load static %}
+        {% load custom_tags %}
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
@@ -23,9 +24,10 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="/news">Новости</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/news">Статьи</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/news/search">Поиск</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/news/create">Добавить</a></li>
                         <li class="nav-item"><a class="nav-link" href="/admin">Админ</a></li>
+
                     </ul>
                 </div>
             </div>
@@ -61,8 +63,8 @@
                         {{ page_number }}
                     {% else %}
                         <a
-                                href="?page={{ page_number }}"
-                                class="{% if page_number == page_obj.number %}fw-bold{% endif %}"
+                            href="?{% url_replace page=page_number %}"
+                            class="{% if page_number == page_obj.number %}fw-bold{% endif %}"
                         >
                             {{ page_number }}
                         </a>

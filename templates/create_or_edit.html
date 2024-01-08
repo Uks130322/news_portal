@@ -1,0 +1,19 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+    Create post
+{% endblock title %}
+
+{% block content %}
+    <h3 class="text-center">Добавить новость</h3>
+    <br>
+    <form class="text-center" action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-lg btn-dark" type="submit" value="Сохранить">
+    </form>
+
+{% endblock content %}
+

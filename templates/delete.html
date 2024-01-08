@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+    Delete post
+{% endblock title %}
+
+{% block content %}
+    <h3 class="text-center">Удалить новость</h3>
+    <br>
+    <form class="text-center" action="" method="post">
+        {% csrf_token %}
+        <p>Вы действительно хотите удалить эту новость?</p>
+        <input class="btn btn-lg btn-dark" type="submit" value="Удалить">
+        <a style="text-decoration: none" href="/news/{{ post.pk }}">
+            <input class="btn btn-lg btn-dark" type="button" value="Отмена" />
+        </a>
+    </form>
+
+{% endblock content %}
+

@@ -12,4 +12,25 @@
     <h6>Автор: {{ post.author.user.username }}</h6>
     <br>
     <p style="white-space: break-spaces;">{{ post.content|censor }}</p>
+    <br><hr><br>
+    <div class="text-center" >
+        <a style="text-decoration: none" href="/news/{{ post.pk }}/edit">
+            <input class="btn btn-lg btn-dark" type="button" value="Редактировать" />
+        </a>
+        <a style="text-decoration: none" href="/news/{{ post.pk }}/delete">
+            <input id="deleteButton" class="btn btn-lg btn-dark" type="button" value="Удалить" />
+        </a>
+    </div>
+
+<script>
+   /* const deleteBtn = document.getElementById('deleteButton')
+
+    const deleteHandler = () => {
+        confirm('olol')
+    }
+
+    document.addEventListener('click', deleteHandler)
+
+*/</script>
 {% endblock content %}
+

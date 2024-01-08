@@ -1,18 +1,25 @@
-from django_filters import FilterSet, ModelChoiceFilter
+from django import forms
+from django_filters import FilterSet, ModelChoiceFilter, DateFilter, CharFilter
 from .models import Post, Author
 
 
 class PostFilter(FilterSet):
+    title = CharFilter(
+        label='Содержит',
+        lookup_expr='icontains'
+    )
     author = ModelChoiceFilter(
-        'author__user__username',
-        queryset=Author.user.username.objects.all(),
+        queryset=Author.objects.all(),
+        lookup_expr='exact',
         label='Автор',
-        empty_label='Все авторы'
+        empty_label='Все авторы',
+    )
+    add_date = DateFilter(
+        label='Опубликованы после',
+        lookup_expr='gt',
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form'})
     )
 
     class Meta:
         model = Post
-        fields = {
-            'title': ['icontains'],
-            'add_date': ['gt']
-        }
+        fields = []

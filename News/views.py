@@ -1,14 +1,15 @@
-from django.views.generic import ListView, DetailView
-from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
+from .forms import PostForm
 from .models import Post
+from .filters import PostFilter
 
 
 class PostList(ListView):
-    """
-    Show all news, 10 by page.
-    Paginator is in default.html
-    """
+    """Show all news, 10 by page. Paginator is in default.html"""
 
     model = Post
     ordering = '-add_date'
@@ -23,12 +24,6 @@ class PostList(ListView):
         context['paginator_range'] = page.paginator.get_elided_page_range(page.number, on_each_side=1, on_ends=1)
         return context
 
-    # def adjusted_elided_pages(self):
-    #     return self.paginator_class.get_elided_page_range(on_each_side=1, on_ends=1)
-    #
-    # def ellipsis(self):
-    #     return self.paginator_class.ELLIPSIS
-
 
 class PostDetail(DetailView):
     model = Post
@@ -36,10 +31,41 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 
-# def listing(request, page):
-#     posts = Post.objects.all().order_by('-add_date')
-#     paginator = Paginator(posts, per_page=10)
-#     page_object = paginator.get_page(page)
-#     page_object.adjusted_elided_pages = paginator.get_elided_page_range(page, on_each_side=1, on_ends=1)
-#     context = {'page_obj': page_object, 'posts': posts}
-#     return render(request, 'news.html', context)
+class PostFilterList(ListView):
+    model = Post
+    ordering = '-add_date'
+    context_object_name = 'posts'
+    paginate_by = 10
+    extra_context = {'posts': Post.objects.all()}
+    template_name = 'search.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = PostFilter(self.request.GET, queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page = context['page_obj']
+        context['paginator_range'] = page.paginator.get_elided_page_range(page.number, on_each_side=1, on_ends=1)
+        context['filterset'] = self.filterset
+        return context
+
+
+class PostCreate(CreateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'create_or_edit.html'
+    success_url = '/news/'
+
+
+class PostEdit(UpdateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'create_or_edit.html'
+
+
+class PostDelete(DeleteView):
+    model = Post
+    template_name = 'delete.html'
+    success_url = reverse_lazy('post_list')

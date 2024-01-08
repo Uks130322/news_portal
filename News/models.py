@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class Author(models.Model):
@@ -19,6 +20,9 @@ class Author(models.Model):
         author_comm = sum(dct['rating'] for dct in Comment.objects.filter(user=self.user).values('rating'))
         comm_under_posts = sum(dct['rating'] for dct in Comment.objects.filter(post__author=self).values('rating'))
         return post_rating + author_comm + comm_under_posts
+
+    def __str__(self):
+        return self.user.username
 
 
 class Category(models.Model):
@@ -65,6 +69,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.title}\n{self.preview()}'
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):
