@@ -13,6 +13,7 @@
         {% for post in page_obj %}
             <h4><a class="nav-link" href="/news/{{ post.pk }}">{{ post.title|censor }}</a></h4>
             <h6>{{ post.add_date|date:'d M Y' }}</h6>
+            <p>{{ post.get_type_display }}</p>
             <p>{{ post.content|truncatewords:20|censor }}</p>
             <br><br>
         {% endfor %}

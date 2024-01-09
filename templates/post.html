@@ -10,16 +10,29 @@
     <h3>{{ post.title|censor }}</h3>
     <h6>{{ post.add_date|date:'d M Y' }}</h6>
     <h6>Автор: {{ post.author.user.username }}</h6>
+
+    <h6>{{ post.get_type_display }}</h6>
+
     <br>
     <p style="white-space: break-spaces;">{{ post.content|censor }}</p>
     <br><hr><br>
     <div class="text-center" >
-        <a style="text-decoration: none" href="/news/{{ post.pk }}/edit">
-            <input class="btn btn-lg btn-dark" type="button" value="Редактировать" />
-        </a>
-        <a style="text-decoration: none" href="/news/{{ post.pk }}/delete">
-            <input id="deleteButton" class="btn btn-lg btn-dark" type="button" value="Удалить" />
-        </a>
+        {% if post.type == "NE" %}
+            <a style="text-decoration: none" href="/news/{{ post.pk }}/edit">
+                <input class="btn btn-lg btn-dark" type="button" value="Редактировать" />
+            </a>
+            <a style="text-decoration: none" href="/news/{{ post.pk }}/delete">
+                <input id="deleteButton" class="btn btn-lg btn-dark" type="button" value="Удалить" />
+            </a>
+        {% else %}
+            <a style="text-decoration: none" href="/articles/{{ post.pk }}/edit">
+                <input class="btn btn-lg btn-dark" type="button" value="Редактировать" />
+            </a>
+            <a style="text-decoration: none" href="/articles/{{ post.pk }}/delete">
+                <input id="deleteButton" class="btn btn-lg btn-dark" type="button" value="Удалить" />
+            </a>
+        {% endif %}
+
     </div>
 
 <script>

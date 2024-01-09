@@ -3,11 +3,23 @@
 {% load custom_filters %}
 
 {% block title %}
-    Create post
+    {% if url == post_create %}
+        Create
+    {% else %}
+        Edit
+    {% endif %}
 {% endblock title %}
 
 {% block content %}
-    <h3 class="text-center">Добавить новость</h3>
+    <h3 class="text-center">
+        {% if url_name == post_create %}
+            Добавить новость
+            Добавить статью
+        {% else %}
+            Редактировать новость
+            Редактировать статью
+        {% endif %}
+    </h3>
     <br>
     <form class="text-center" action="" method="post">
         {% csrf_token %}

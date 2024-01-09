@@ -58,6 +58,13 @@ class PostCreate(CreateView):
     template_name = 'create_or_edit.html'
     success_url = '/news/'
 
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        if self.request.path == '/articles/create/':
+            post.type = 'AR'
+        post.save()
+        return super().form_valid(form)
+
 
 class PostEdit(UpdateView):
     form_class = PostForm
