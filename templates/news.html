@@ -7,7 +7,7 @@
 {% endblock title %}
 
 {% block content %}
-    <h2>Количество доступных статей: {{ posts|length }}</h2>
+    <h2>Количество доступных статей: {{ page_obj.paginator.count }}</h2>
     <br><br>
     {% if posts %}
         {% for post in page_obj %}

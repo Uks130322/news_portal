@@ -13,6 +13,7 @@ class PostForm(forms.ModelForm):
         min_length=200,
         widget=forms.Textarea({'cols': 70, 'rows': 20})
     )
+
     class Meta:
         model = Post
         fields = [

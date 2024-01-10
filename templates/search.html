@@ -14,7 +14,7 @@
         <input class="btn btn-lg btn-dark" type="submit" value="Найти" />
     </form>
     <br><br>
-    <h3>Количество найденых статей: {{ posts|length }}</h3>
+    <h3>Количество найденых статей: {{ page_obj.paginator.count }}</h3>
     <br><br>
     {% if posts %}
         {% for post in page_obj %}

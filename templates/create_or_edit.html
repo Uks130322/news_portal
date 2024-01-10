@@ -3,22 +3,12 @@
 {% load custom_filters %}
 
 {% block title %}
-    {% if url == post_create %}
-        Create
-    {% else %}
-        Edit
-    {% endif %}
+    {{ get_title }}
 {% endblock title %}
 
 {% block content %}
     <h3 class="text-center">
-        {% if url_name == post_create %}
-            Добавить новость
-            Добавить статью
-        {% else %}
-            Редактировать новость
-            Редактировать статью
-        {% endif %}
+        {{ get_type }}
     </h3>
     <br>
     <form class="text-center" action="" method="post">

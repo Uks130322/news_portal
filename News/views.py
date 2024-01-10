@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import PostForm
 from .models import Post
@@ -36,7 +37,6 @@ class PostFilterList(ListView):
     ordering = '-add_date'
     context_object_name = 'posts'
     paginate_by = 10
-    extra_context = {'posts': Post.objects.all()}
     template_name = 'search.html'
 
     def get_queryset(self):
@@ -59,17 +59,45 @@ class PostCreate(CreateView):
     success_url = '/news/'
 
     def form_valid(self, form):
+        """Create article or news depending on the path"""
         post = form.save(commit=False)
         if self.request.path == '/articles/create/':
             post.type = 'AR'
         post.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        """Get correct html-title and title on page depending on the path"""
+        context = super().get_context_data(**kwargs)
+        context['get_title'] = self.get_type()[0]
+        context['get_type'] = self.get_type()[1]
+        return context
 
+    def get_type(self):
+        if self.request.path == '/articles/create/':
+            return ['Create article', 'Добавить статью']
+        else:
+            return ['Create news', 'Добавить новость']
+
+
+# class PostEdit(LoginRequiredMixin, UpdateView):
 class PostEdit(UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'create_or_edit.html'
+
+    def get_context_data(self, **kwargs):
+        """Get correct html-title and title on page depending on the path"""
+        context = super().get_context_data(**kwargs)
+        context['get_title'] = self.get_type()[0]
+        context['get_type'] = self.get_type()[1]
+        return context
+
+    def get_type(self):
+        if 'articles' in self.request.path:
+            return ['Edit article', 'Редактировать статью']
+        else:
+            return ['Edit news', 'Редактировать новость']
 
 
 class PostDelete(DeleteView):
