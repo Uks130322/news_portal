@@ -1,7 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+)
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import PostForm
@@ -52,7 +54,7 @@ class PostFilterList(ListView):
         return context
 
 
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'create_or_edit.html'
@@ -69,19 +71,18 @@ class PostCreate(CreateView):
     def get_context_data(self, **kwargs):
         """Get correct html-title and title on page depending on the path"""
         context = super().get_context_data(**kwargs)
-        context['get_title'] = self.get_type()[0]
-        context['get_type'] = self.get_type()[1]
+        context['get_title'] = self.get_type()['title']
+        context['get_type'] = self.get_type()['content']
         return context
 
     def get_type(self):
         if self.request.path == '/articles/create/':
-            return ['Create article', 'Добавить статью']
+            return {'title': 'Create article', 'content': 'Добавить статью'}
         else:
-            return ['Create news', 'Добавить новость']
+            return {'title': 'Create news', 'content': 'Добавить новость'}
 
 
-# class PostEdit(LoginRequiredMixin, UpdateView):
-class PostEdit(UpdateView):
+class PostEdit(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'create_or_edit.html'
@@ -89,18 +90,22 @@ class PostEdit(UpdateView):
     def get_context_data(self, **kwargs):
         """Get correct html-title and title on page depending on the path"""
         context = super().get_context_data(**kwargs)
-        context['get_title'] = self.get_type()[0]
-        context['get_type'] = self.get_type()[1]
+        context['get_title'] = self.get_type()['title']
+        context['get_type'] = self.get_type()['content']
         return context
 
     def get_type(self):
         if 'articles' in self.request.path:
-            return ['Edit article', 'Редактировать статью']
+            return {'title': 'Edit article', 'content': 'Редактировать статью'}
         else:
-            return ['Edit news', 'Редактировать новость']
+            return {'title': 'Edit news', 'content': 'Редактировать новость'}
 
 
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'delete.html'
     success_url = reverse_lazy('post_list')
+
+
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'profile.html'
