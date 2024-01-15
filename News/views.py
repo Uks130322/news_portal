@@ -1,10 +1,12 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 )
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
 
 from .forms import PostForm
 from .models import Post
@@ -54,7 +56,8 @@ class PostFilterList(ListView):
         return context
 
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('News.add_post',)
     form_class = PostForm
     model = Post
     template_name = 'create_or_edit.html'
@@ -82,7 +85,8 @@ class PostCreate(LoginRequiredMixin, CreateView):
             return {'title': 'Create news', 'content': 'Добавить новость'}
 
 
-class PostEdit(LoginRequiredMixin, UpdateView):
+class PostEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = ('News.change_post',)
     form_class = PostForm
     model = Post
     template_name = 'create_or_edit.html'
@@ -101,7 +105,9 @@ class PostEdit(LoginRequiredMixin, UpdateView):
             return {'title': 'Edit news', 'content': 'Редактировать новость'}
 
 
-class PostDelete(LoginRequiredMixin, DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('News.delete_post',)   # for now, nobody has this permission
+    redirect_field_name = 'profile'
     model = Post
     template_name = 'delete.html'
     success_url = reverse_lazy('post_list')
@@ -109,3 +115,17 @@ class PostDelete(LoginRequiredMixin, DeleteView):
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_author'] = not self.request.user.groups.filter(name='author').exists()
+        return context
+
+
+@login_required
+def upgrade_me(request):
+    user = request.user
+    author_group = Group.objects.get(name='author')
+    if not request.user.groups.filter(name='author').exists():
+        author_group.user_set.add(user)
+    return redirect('/news/profile/')
