@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
@@ -9,7 +9,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 
 from .forms import PostForm
-from .models import Post
+from .models import Post, Category
 from .filters import PostFilter
 
 
@@ -26,7 +26,9 @@ class PostList(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         page = context['page_obj']
-        context['paginator_range'] = page.paginator.get_elided_page_range(page.number, on_each_side=1, on_ends=1)
+        context['all_categories'] = Category.objects.all()
+        context['paginator_range'] = page.paginator.get_elided_page_range(
+            page.number, on_each_side=1, on_ends=1)
         return context
 
 
@@ -51,8 +53,31 @@ class PostFilterList(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         page = context['page_obj']
-        context['paginator_range'] = page.paginator.get_elided_page_range(page.number, on_each_side=1, on_ends=1)
+        context['paginator_range'] = page.paginator.get_elided_page_range(
+            page.number, on_each_side=1, on_ends=1)
         context['filterset'] = self.filterset
+        return context
+
+
+class PostCategoryList(ListView):
+    model = Post
+    context_object_name = 'posts'
+    paginate_by = 10
+    template_name = 'categories.html'
+
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(category=self.category).order_by('-add_date')
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page = context['page_obj']
+        context['all_categories'] = Category.objects.all()
+        context['category'] = self.category
+        context['paginator_range'] = page.paginator.get_elided_page_range(
+            page.number, on_each_side=1, on_ends=1)
+        context['is_subscriber'] = self.request.user in self.category.subscribers.all()
         return context
 
 
@@ -129,3 +154,11 @@ def upgrade_me(request):
     if not request.user.groups.filter(name='author').exists():
         author_group.user_set.add(user)
     return redirect('/news/profile/')
+
+
+@login_required
+def subscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.add(user)
+    return redirect('categories', pk)

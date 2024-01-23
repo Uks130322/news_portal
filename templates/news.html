@@ -7,15 +7,38 @@
 {% endblock title %}
 
 {% block content %}
+    <div>
+        {% for category in all_categories %}
+            <a style="text-decoration: none" href="{% url 'categories' category.id %}">
+                <span class="badge text-bg-secondary">{{ category }}</span>
+            </a>
+        {% endfor %}
+    </div>
+    <br>
     <h2>Количество доступных статей: {{ page_obj.paginator.count }}</h2>
     <br><br>
     {% if posts %}
         {% for post in page_obj %}
             <h4><a class="nav-link" href="/news/{{ post.pk }}">{{ post.title|censor }}</a></h4>
-            <h6>{{ post.add_date|date:'d M Y' }}</h6>
-            <p>{{ post.get_type_display }}</p>
             <p>{{ post.content|truncatewords:20|censor }}</p>
-            <br><br>
+
+            <table width="100%">
+                <tr>
+                    <td width="100"><b>{{ post.add_date|date:'d M Y' }}</b></td>
+                    <td>{{ post.get_type_display }}</td>
+                    <td align="right">Автор: {{ post.author }}</td>
+
+                </tr>
+            </table>
+
+        <div>
+            {% for category in post.get_categories %}
+                <a style="text-decoration: none" href="{% url 'categories' category.id %}">
+                    <span class="badge text-bg-secondary">{{ category }}</span>
+                </a>
+            {% endfor %}
+        </div>
+        <br><br><br>
         {% endfor %}
     {% else %}
         <h3>Извините, новостей сейчас нет!</h3>

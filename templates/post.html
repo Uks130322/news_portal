@@ -8,13 +8,18 @@
 
 {% block content %}
     <h3>{{ post.title|censor }}</h3>
-    <h6>{{ post.add_date|date:'d M Y' }}</h6>
-    <h6>Автор: {{ post.author.user.username }}</h6>
-
-    <h6>{{ post.get_type_display }}</h6>
-
+    <div>
+    {% for category in post.get_categories %}
+        <a style="text-decoration: none" href="{% url 'categories' category.id %}">
+            <span class="badge text-bg-secondary">{{ category }}</span>
+        </a>
+    {% endfor %}
+    </div>
     <br>
     <p style="white-space: break-spaces;">{{ post.content|censor }}</p>
+    <h6>{{ post.add_date|date:'d M Y' }}</h6>
+    <h6>Автор: {{ post.author.user.username }}</h6>
+    <h6>{{ post.get_type_display }}</h6>
     <br><hr><br>
     <div class="text-center" >
         {% if post.type == "NE" %}

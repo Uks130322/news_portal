@@ -34,3 +34,4 @@ def censor(value: str) -> str:
     except CensorException as error:
         print(error)
         pass
+

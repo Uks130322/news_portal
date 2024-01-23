@@ -29,6 +29,7 @@ class Category(models.Model):
     """Has many-to-many relation with posts trough model PostCategories"""
 
     name = models.CharField(max_length=150, unique=True)
+    subscribers = models.ManyToManyField(User, blank=True, null=True, related_name='categories')
 
     def __str__(self):
         return self.name
@@ -51,7 +52,7 @@ class Post(models.Model):
     rating = models.IntegerField(default=0)
 
     author = models.ForeignKey(Author, on_delete=models.PROTECT)
-    category = models.ManyToManyField(Category, through='PostCategory')
+    category = models.ManyToManyField(Category, through='PostCategory', related_name='posts_categories')
 
     def like(self):
         """Increase a rating by 1"""
@@ -72,6 +73,10 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('post_detail', args=[str(self.id)])
+
+    def get_categories(self):
+        cat_qs = self.category.all()
+        return cat_qs
 
 
 class PostCategory(models.Model):

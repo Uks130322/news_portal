@@ -1,9 +1,16 @@
 from django import forms
 from django_filters import FilterSet, ModelChoiceFilter, DateFilter, CharFilter
-from .models import Post, Author
+from .models import Post, Author, Category
 
 
 class PostFilter(FilterSet):
+    # category = ModelChoiceFilter(
+    #     queryset=Category.objects.all(),
+    #     lookup_expr='exact',
+    #     label='Категория',
+    #     empty_label='Все категории',
+    # )
+
     title = CharFilter(
         label='Содержит',
         lookup_expr='icontains'
