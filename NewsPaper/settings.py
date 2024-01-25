@@ -51,13 +51,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+
+    'django_apscheduler',
 ]
-
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/news/profile/'
-LOGOUT_REDIRECT_URL = '/news/'
-
-SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -127,6 +123,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/news/profile/'
+LOGOUT_REDIRECT_URL = '/news/'
+
+SITE_ID = 1
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -138,6 +140,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

@@ -29,7 +29,7 @@ class Category(models.Model):
     """Has many-to-many relation with posts trough model PostCategories"""
 
     name = models.CharField(max_length=150, unique=True)
-    subscribers = models.ManyToManyField(User, blank=True, null=True, related_name='categories')
+    subscribers = models.ManyToManyField(User, blank=True, related_name='categories')
 
     def __str__(self):
         return self.name

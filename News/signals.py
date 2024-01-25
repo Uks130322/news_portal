@@ -9,7 +9,7 @@ from NewsPaper.settings import SITE_URL, DEFAULT_FROM_EMAIL
 
 def send_notifications(post, subscribers):
     html_content = render_to_string(
-        'new_post_email.html',
+        'account/email/new_post_email.html',
         {
             'text': post.preview(),
             'link': f'{SITE_URL}/news/{post.pk}',
@@ -30,7 +30,7 @@ def send_notifications(post, subscribers):
 def notify_about_new_post(sender, instance, **kwargs):
     if kwargs['action'] == 'post_add':
         categories = instance.get_categories()
-        subscribers_datas = []
+        # subscribers_datas = []
         subscribers_emails = []
 
         for cat in categories:
@@ -38,9 +38,8 @@ def notify_about_new_post(sender, instance, **kwargs):
 
             for subscriber in subscribers:
                 subscribers_emails += [subscriber.email]
-                subscribers_datas += [{'email': subscriber.email, 'name': subscriber.username}]
+                # subscribers_datas += [{'email': subscriber.email, 'name': subscriber.username}]
 
-        print(subscribers_emails)
         send_notifications(instance, subscribers_emails)
 
 
