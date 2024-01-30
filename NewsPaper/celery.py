@@ -12,7 +12,10 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'mailing_on_mondays_8am': {
         'task': 'News.tasks.send_weekly_mail',
-        # 'schedule': crontab(hour=8, minute=0, day_of_week='monday'),
-        'schedule': crontab(hour=21, minute=43, day_of_week='thursday'),
+        'schedule': crontab(hour=8, minute=0, day_of_week='monday'),
+        # 'schedule': crontab(hour=19, minute=12, day_of_week='tuesday'),
+        'args': ()
     },
 }
+
+app.conf.timezone = 'UTC'
