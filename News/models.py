@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.core.cache import cache
 
 
 class Author(models.Model):
@@ -77,6 +78,10 @@ class Post(models.Model):
     def get_categories(self):
         cat_qs = self.category.all()
         return cat_qs
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'post-{self.pk}')
 
 
 class PostCategory(models.Model):

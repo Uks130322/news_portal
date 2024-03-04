@@ -28,7 +28,7 @@ def censor(value: str) -> str:
     try:
         if not isinstance(value, str):
             raise CensorException('Filter can work only with str format')
-        pattern = re.compile(fr"\b{BAD_WORD}[а-я]{{0,3}}\b", re.IGNORECASE)
+        pattern = re.compile(fr"\b{BAD_WORD}[а-я]{{0,5}}\b", re.IGNORECASE)
         result = re.sub(pattern, censor_repl, value)
         return result
     except CensorException as error:

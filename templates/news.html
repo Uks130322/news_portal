@@ -7,13 +7,16 @@
 {% endblock title %}
 
 {% block content %}
-    <div>
-        {% for category in all_categories %}
-            <a style="text-decoration: none" href="{% url 'categories' category.id %}">
-                <span class="badge text-bg-secondary">{{ category }}</span>
-            </a>
-        {% endfor %}
-    </div>
+    {% load cache %}
+    {% cache 600 categories_badges %}
+        <div>
+            {% for category in all_categories %}
+                <a style="text-decoration: none" href="{% url 'categories' category.id %}">
+                    <span class="badge text-bg-secondary">{{ category }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% endcache %}
     <br>
     <h2>Количество доступных статей: {{ page_obj.paginator.count }}</h2>
     <br><br>
