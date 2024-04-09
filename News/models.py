@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.cache import cache
+from django.utils.translation import gettext as _
+from django.utils.translation import pgettext_lazy
 
 
 class Author(models.Model):
@@ -29,7 +31,7 @@ class Author(models.Model):
 class Category(models.Model):
     """Has many-to-many relation with posts trough model PostCategories"""
 
-    name = models.CharField(max_length=150, unique=True)
+    name = models.CharField(max_length=150, unique=True, help_text=_('category_name'))
     subscribers = models.ManyToManyField(User, blank=True, related_name='categories')
 
     def __str__(self):
@@ -53,7 +55,9 @@ class Post(models.Model):
     rating = models.IntegerField(default=0)
 
     author = models.ForeignKey(Author, on_delete=models.PROTECT)
-    category = models.ManyToManyField(Category, through='PostCategory', related_name='posts_categories')
+    category = models.ManyToManyField(Category, through='PostCategory', related_name='posts_categories',
+                                      verbose_name=pgettext_lazy('help text for Post model',
+                                                                 'This is the help text'),)
 
     def like(self):
         """Increase a rating by 1"""

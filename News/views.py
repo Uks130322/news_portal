@@ -9,10 +9,18 @@ from django.core.cache import cache
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext as _
 
 from .forms import PostForm
 from .models import Post, Category
 from .filters import PostFilter
+
+
+class Index(View):
+    def get(self, request):
+        string = _('Hello world')
+
+        return HttpResponse(string)
 
 
 class PostList(ListView):
